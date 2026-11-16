@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>KRAVTS // CYBER-VFD MODULE RADIO</title>
+<link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
+<style>
+:root {
+  --vfd-bg: #030605;
+  --vfd-on: #39ffca;
+  --vfd-glow: rgba(57, 255, 202, 0.45);
+  --vfd-dim: #133328;
+  --border-dark: #0a0a0a;
+}
+
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; margin: 0; padding: 0; }
+body, html { width: 100%; height: 100%; background: #000; display: flex; align-items: center; justify-content: center; overflow: hidden; font-family: 'VT323', monospace; user-select: none; -webkit-user-select: none; }
+
+/* DÜZ, GERÇEKÇİ SİYAH VFD MODÜL ÇERÇEVESİ */
+.vfd-module {
+  width: 100vw;
+  height: 56.25vw;
+  max-width: 1920px;
+  max-height: 1080px;
+  background-color: var(--border-dark);
+  background-image: linear-gradient(135deg, #111 0%, #050505 100%);
+  border: 1.2vw solid #0c0c0c;
+  box-shadow: inset 0 0 20px #000, 0 0 50px rgba(0,0,0,0.8);
+  padding: 1.5vw 2.5vw;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  position: relative;
+  overflow: hidden;
+}
+
+/* CAM YANSIMASI VE TARAMA ÇİZGİLERİ */
+.scanlines {
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(to bottom, rgba(0,0,0,0) 0px, rgba(0,0,0,0) 2px, rgba(0,0,0,0.2) 2px, rgba(0,0,0,0.2) 4px);
+  pointer-events: none;
+  z-index: 10;
+}
+.glass-glare {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,0.015) 0%, transparent 60%);
+  pointer-events: none;
+  z-index: 11;
+}
+
+/* ÜST PANEL: SAAT VE DURUM */
+.top-deck {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-shrink: 0;
+  z-index: 2;
+}
+.vfd-text {
+  font-size: 4.5vw;
+  color: var(--vfd-on);
+  text-shadow: 0 0 8px var(--vfd-glow);
+  letter-spacing: 2px;
+}
+.top-sub {
+  font-size: 1.6vw;
+  color: var(--vfd-dim);
+  letter-spacing: 2px;
+}
+.top-sub span.active {
+  color: var(--vfd-on);
+  text-shadow: 0 0 5px var(--vfd-glow);
+}
+
+/* ORTA PANEL: 20 İSTASYON IZGARASI */
+.grid-container {
+  flex: 1;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  grid-template-rows: repeat(4, 1fr);
+  gap: 1vw;
+  padding: 1vw 0;
+  z-index: 2;
+}
+
+.station-btn {
+  background: rgba(0,0,0,0.3);
+  border: 1px solid var(--vfd-dim);
+  color: var(--vfd-dim);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: inherit;
+  font-size: 2vw;
+  border-radius: 2px;
+  position: relative;
+  transition: all 0.15s ease;
+  letter-spacing: 1px;
+}
+
+.station-btn.active {
+  border-color: var(--vfd-on);
+  color: var(--vfd-on);
+  background: rgba(57, 255, 202, 0.05);
+  text-shadow: 0 0 8px var(--vfd-glow);
+  box-shadow: inset 0 0 6px rgba(57, 255, 202, 0.2);
+}
+
+.station-btn .num { margin-right: 0.5vw; }
+.station-btn .name { font-weight: bold; }
+
+/* ALT PANEL: KONTROLLER, İLERİ/GERİ VE KAYAN YAZI */
+.bottom-deck {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6vw;
+  flex-shrink: 0;
+  z-index: 2;
+}
+
+.controls-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.media-group {
+  display: flex;
+  gap: 1.2vw;
+  align-items: center;
+}
+
+.ctrl-btn {
+  background: transparent;
+  border: 1px solid var(--vfd-dim);
+  color: var(--vfd-dim);
+  font-family: inherit;
+  font-size: 1.8vw;
+  padding: 0.1vw 0.8vw;
+  cursor: pointer;
+  border-radius: 2px;
+  transition: all 0.1s ease;
+}
+.ctrl-btn.active, .ctrl-btn:hover {
+  border-color: var(--vfd-on);
+  color: var(--vfd-on);
+  text-shadow: 0 0 6px var(--vfd-glow);
+}
+
+/* MARQUEE KAYAN YAZI BANDI */
+.marquee-wrapper {
+  border-top: 1px dashed var(--vfd-dim);
+  padding-top: 0.6vw;
+  overflow: hidden;
+  white-space: nowrap;
+  display: flex;
+}
+.marquee-text {
+  display: inline-block;
+  font-size: 2.2vw;
+  color: var(--vfd-on);
+  text-shadow: 0 0 8px var(--vfd-glow);
+  letter-spacing: 2.5px;
+  animation: marqueeScroll 25s linear infinite;
+}
+@keyframes marqueeScroll {
+  0% { transform: translateX(100%); }
+  100% { transform: translateX(-100%); }
+}
+</style>
+</head>
+<body>
+
+<div class="vfd-module">
+  <div class="scanlines"></div>
+  <div class="glass-glare"></div>
+
+  <!-- ÜST PANEL -->
+  <div class="top-deck">
+    <div class="vfd-text" id="lbl-date">TUE NOV 17</div>
+    <div class="top-sub">
+      <span class="active">FM ST</span> | PRESET <span id="lbl-preset">1</span>
+    </div>
+    <div class="vfd-text" id="lbl-time">12:57:02</div>
+  </div>
+
+  <!-- ORTA PANEL (20 RADYO) -->
+  <div class="grid-container" id="radioGrid"></div>
+
+  <!-- ALT PANEL -->
+  <div class="bottom-deck">
+    <div class="controls-row">
+      <div class="media-group">
+        <button class="ctrl-btn" onclick="prevStation()">[&lt; PREV]</button>
+        <button class="ctrl-btn active" id="btn-play" onclick="playAudio()">[PLAY]</button>
+        <button class="ctrl-btn" id="btn-stop" onclick="stopAudio()">[STOP]</button>
+        <button class="ctrl-btn" onclick="nextStation()">[NEXT &gt;]</button>
+      </div>
+      <div style="font-size: 1.6vw; color: var(--vfd-dim); letter-spacing: 1.5px;">KRAVTS CYBER-VFD</div>
+    </div>
+    <div class="marquee-wrapper">
+      <div class="marquee-text" id="lbl-status">«« NOW PLAYING: 01 NIGHTRIDE FM Stereo Stream Online ««</div>
+    </div>
+  </div>
+</div>
+
+<audio id="audioPlayer" preload="none"></audio>
+
+<script>
+const stations = [
+  { num: "01", name: "NIGHT", url: "https://stream.nightride.fm/nightride.mp3", desc: "NIGHTRIDE FM - Synthwave & Darksynth" },
+  { num: "02", name: "DARK", url: "https://stream.nightride.fm/darksynth.mp3", desc: "DARKSYNTH - Cyberpunk & Dark Electro" },
+  { num: "03", name: "CHILL", url: "https://stream.nightride.fm/chillsynth.mp3", desc: "CHILLSYNTH - Relaxing Retrowave" },
+  { num: "04", name: "DATA", url: "https://stream.nightride.fm/datawave.mp3", desc: "DATAWAVE - Ambient & Cyber Beats" },
+  { num: "05", name: "HORROR", url: "https://stream.nightride.fm/horrorsynth.mp3", desc: "HORRORSYNTH - Dark Cinematic Soundtracks" },
+  { num: "06", name: "SPACE", url: "https://stream.nightride.fm/spacesynth.mp3", desc: "SPACESYNTH - Cosmic Electronic Voyage" },
+  { num: "07", name: "DEFCON", url: "https://ice2.somafm.com/defcon-128-mp3", desc: "SOMA FM DEFCON - Hacker & Electronic Music" },
+  { num: "08", name: "SPACEST", url: "https://ice2.somafm.com/spacestation-128-mp3", desc: "SOMA FM SPACESTATION - Ambient & Space" },
+  { num: "09", name: "DARKZN", url: "https://ice2.somafm.com/darkzone-128-mp3", desc: "SOMA FM DARK ZONE - Industrial & Ambient" },
+  { num: "10", name: "PLAZA", url: "https://radio.plaza.one/mp3", desc: "PLAZA.ONE - 80s Vapourwave & Synth" },
+  { num: "11", name: "BOOT", url: "https://ice2.somafm.com/bootliquor-128-mp3", desc: "SOMA FM BOOT LIQUOR - Americana & Country" },
+  { num: "12", name: "REAL", url: "https://listen.181fm.com/181-realcountry_128k.mp3", desc: "181.FM REAL COUNTRY - Classic Country Hits" },
+  { num: "13", name: "HWY181", url: "https://listen.181fm.com/181-highway_128k.mp3", desc: "181.FM HIGHWAY 181 - Trucker Country" },
+  { num: "14", name: "80SCTY", url: "https://listen.181fm.com/181-80scountry_128k.mp3", desc: "181.FM 80S COUNTRY - Retro Country Gold" },
+  { num: "15", name: "FRNTPCH", url: "https://listen.181fm.com/181-frontporch_128k.mp3", desc: "181.FM FRONT PORCH - Acoustic & Country" },
+  { num: "16", name: "GROOVE", url: "https://ice2.somafm.com/groovesalad-128-mp3", desc: "SOMA FM GROOVE SALAD - Downtambient" },
+  { num: "17", name: "SECAGT", url: "https://ice2.somafm.com/secretagent-128-mp3", desc: "SOMA FM SECRET AGENT - Spy & Lounge Beats" },
+  { num: "18", name: "DRONE", url: "https://ice2.somafm.com/dronezone-128-mp3", desc: "SOMA FM DRONE ZONE - Atmospheric Ambient" },
+  { num: "19", name: "EAGLE", url: "https://listen.181fm.com/181-eagle_128k.mp3", desc: "181.FM THE EAGLE - Classic Rock & Night" },
+  { num: "20", name: "YACHT", url: "https://listen.181fm.com/181-yachtrock_128k.mp3", desc: "181.FM YACHT ROCK - Smooth 70s & 80s" }
+];
+
+const ap = document.getElementById("audioPlayer");
+let activeIndex = 0;
+
+const grid = document.getElementById("radioGrid");
+stations.forEach((st, idx) => {
+  const btn = document.createElement("button");
+  btn.className = `station-btn ${idx === 0 ? 'active' : ''}`;
+  btn.onclick = () => selectStation(idx);
+  btn.innerHTML = `<span class="num">${st.num}</span><span class="name">${st.name}</span>`;
+  grid.appendChild(btn);
+});
+
+function selectStation(idx) {
+  document.querySelectorAll(".station-btn").forEach((b, i) => {
+    b.classList.toggle("active", i === idx);
+  });
+  activeIndex = idx;
+  const s = stations[idx];
+  document.getElementById("lbl-preset").innerText = s.num;
+  ap.pause();
+  ap.src = s.url;
+  playAudio();
+}
+
+function nextStation() {
+  let nextIdx = (activeIndex + 1) % stations.length;
+  selectStation(nextIdx);
+}
+
+function prevStation() {
+  let prevIdx = (activeIndex - 1 + stations.length) % stations.length;
+  selectStation(prevIdx);
+}
+
+function playAudio() {
+  const s = stations[activeIndex];
+  document.getElementById("lbl-status").innerText = `«« CONNECTING: ${s.desc} ... ««`;
+  document.getElementById("btn-play").classList.add("active");
+  document.getElementById("btn-stop").classList.remove("active");
+  ap.play()
+    .then(() => {
+      document.getElementById("lbl-status").innerText = `«« NOW PLAYING: ${s.num} - ${s.desc} // STEREO STREAM ONLINE ««`;
+    })
+    .catch(() => {
+      document.getElementById("lbl-status").innerText = `«« STREAM READY / PAUSED: ${s.num} ${s.name} ««`;
+    });
+}
+
+function stopAudio() {
+  ap.pause();
+  document.getElementById("btn-play").classList.remove("active");
+  document.getElementById("btn-stop").classList.add("active");
+  const s = stations[activeIndex];
+  document.getElementById("lbl-status").innerText = `«« STOPPED: ${s.num} ${s.name} ««`;
+}
+
+function updateClock() {
+  const now = new Date();
+  const days = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
+  const months = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
+  document.getElementById("lbl-date").innerText = `${days[now.getDay()]} ${months[now.getMonth()]} ${String(now.getDate()).padStart(2, "0")}`;
+  
+  const h = String(now.getHours()).padStart(2, "0");
+  const m = String(now.getMinutes()).padStart(2, "0");
+  const s = String(now.getSeconds()).padStart(2, "0");
+  document.getElementById("lbl-time").innerText = `${h}:${m}:${s}`;
+}
+setInterval(updateClock, 1000);
+updateClock();
+
+ap.src = stations[0].url;
+</script>
+</body>
+</html>
