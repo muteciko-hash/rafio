@@ -3,198 +3,236 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-<title>KRAVTS // AUTHENTIC VFD MODULE RADIO</title>
+<title>KRAVTS // CYBER-VFD MODULE 1.2</title>
 <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
 <style>
 :root {
-  --vfd-deep-bg: #010302;
+  --vfd-bg: #030605;
   --vfd-on: #39ffca;
-  --vfd-glow: rgba(57, 255, 202, 0.5);
-  --vfd-dim: #103024;
-  --filament-line: rgba(255, 120, 50, 0.08);
+  --vfd-glow: rgba(57, 255, 202, 0.55);
+  --vfd-dim: #224235;
+  --pcb-green: #143826;
+  --pcb-edge: #0c2418;
 }
 
 * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; margin: 0; padding: 0; }
-body, html { width: 100%; height: 100%; background: #000; display: flex; align-items: center; justify-content: center; overflow: hidden; font-family: 'VT323', monospace; user-select: none; -webkit-user-select: none; }
-
-/* GERÇEKÇİ VFD TÜP MODÜL KASASI VE CAMI */
-.vfd-housing {
+body, html {
   width: 100vw;
-  height: 56.25vw;
-  max-width: 1920px;
-  max-height: 1080px;
-  background-color: var(--vfd-deep-bg);
-  /* Gerçekçi VFD cam içi dikey flaman telleri ve tüp gölgelemesi */
-  background-image: 
-    linear-gradient(90deg, var(--filament-line) 1px, transparent 1px),
-    linear-gradient(180deg, rgba(0,0,0,0.6) 0%, rgba(3,6,5,0.95) 100%);
-  background-size: 3.5vw 100%, 100% 100%;
-  border: 1.5vw solid #040504;
-  box-shadow: inset 0 0 40px rgba(0,0,0,0.95), 0 0 60px rgba(0,0,0,0.8);
-  padding: 2vw 2.5vw;
+  height: 100vh;
+  height: 100dvh;
+  background: #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  font-family: 'VT323', monospace;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* YEŞİL DEVRE KARTI (PCB) DIŞ KASASI - GÖNDERDİĞİN FOTOĞRAFIN BİREBİR ORTAMI */
+.pcb-board {
+  width: 96vw;
+  height: 54vw;
+  max-width: 1400px;
+  max-height: 787px;
+  background-color: var(--pcb-green);
+  background-image: linear-gradient(135deg, #1b4d34 0%, #0d291b 100%);
+  border: 0.8vw solid var(--pcb-edge);
+  border-radius: 6px;
+  box-shadow: 0 0 30px rgba(0,0,0,0.9), inset 0 0 15px rgba(0,0,0,0.6);
+  padding: 1.2vw 1.8vw;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   position: relative;
-  overflow: hidden;
 }
 
-/* FLAMAN (FILAMENT) ISITICI TELLERE AİT YATAY İNCE İZLER VE CRT CAM TARAMASI */
-.vfd-housing::before {
+/* PCB KÖŞE VİDALARI */
+.screw {
+  position: absolute;
+  width: 1.2vw; height: 1.2vw;
+  background: radial-gradient(circle, #ccc 30%, #555 70%, #111 100%);
+  border-radius: 50%;
+  box-shadow: inset 0 0 2px #000;
+}
+.screw-tl { top: 0.6vw; left: 0.6vw; }
+.screw-tr { top: 0.6vw; right: 0.6vw; }
+.screw-bl { bottom: 0.6vw; left: 0.6vw; }
+.screw-br { bottom: 0.6vw; right: 0.6vw; }
+
+/* PCB ÜSTÜNDEKİ YAZILAR VE ETİKETLER */
+.pcb-header {
+  display: flex;
+  justify-content: space-between;
+  font-size: 1.1vw;
+  color: #3b7a57;
+  letter-spacing: 1.5px;
+  padding: 0 0.5vw;
+  text-transform: uppercase;
+}
+
+/* VFD CAM EKRAN ÇERÇEVESİ (KOYU GÜMÜŞ/SİYAH METAL ÇERÇEVE) */
+.vfd-glass-panel {
+  flex: 1;
+  background-color: var(--vfd-bg);
+  background-image: 
+    linear-gradient(90deg, rgba(255,140,60,0.03) 1px, transparent 1px),
+    linear-gradient(180deg, rgba(0,0,0,0.4) 0%, rgba(2,5,4,0.95) 100%);
+  background-size: 3vw 100%, 100% 100%;
+  border: 0.5vw solid #1b2621;
+  box-shadow: inset 0 0 25px #000;
+  padding: 1vw 1.5vw;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  position: relative;
+  margin: 0.6vw 0;
+}
+
+/* VFD CAM TARAMA VE FLAMAN ÇİZGİLERİ */
+.vfd-glass-panel::before {
   content: "";
   position: absolute;
   inset: 0;
-  background: repeating-linear-gradient(0deg, rgba(0, 0, 0, 0.15), rgba(0, 0, 0, 0.15) 1px, transparent 1px, transparent 3px);
+  background: repeating-linear-gradient(0deg, rgba(0,0,0,0.2), rgba(0,0,0,0.2) 1px, transparent 1px, transparent 3px);
   pointer-events: none;
-  z-index: 12;
+  z-index: 10;
 }
 
-/* CAM YANSIMASI VE DERİNLİK */
-.glass-glare {
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(circle at 50% 8%, rgba(57,255,202,0.03) 0%, transparent 65%),
-              linear-gradient(120deg, rgba(255,255,255,0.02) 0%, transparent 45%, rgba(0,0,0,0.4) 100%);
-  pointer-events: none;
-  z-index: 13;
-}
-
-/* ÜST PANEL */
-.top-deck {
+/* ÜST BİLGİ SATIRI */
+.vfd-top {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  flex-shrink: 0;
   z-index: 2;
 }
-.vfd-text {
-  font-size: 4.5vw;
+.vfd-main-title {
+  font-size: 2.8vw;
   color: var(--vfd-on);
-  text-shadow: 0 0 10px var(--vfd-glow), 0 0 20px rgba(57,255,202,0.2);
+  text-shadow: 0 0 8px var(--vfd-glow);
   letter-spacing: 2px;
 }
-.top-sub {
-  font-size: 1.6vw;
+.vfd-sub-info {
+  font-size: 1.2vw;
   color: var(--vfd-dim);
   letter-spacing: 2px;
 }
-.top-sub span.active {
+.vfd-sub-info span.active {
   color: var(--vfd-on);
-  text-shadow: 0 0 6px var(--vfd-glow);
+  text-shadow: 0 0 5px var(--vfd-glow);
 }
 
-/* ORTA PANEL: 20 İSTASYON IZGARASI (SÖNÜK İZLERLE BİRLİKTE) */
-.grid-container {
-  flex: 1;
+/* 20 KANAL IZGARASI (GÖNDERDİĞİN GÖRSELDEKİ SÖNÜK 16-SEGMENT KUTULAR) */
+.vfd-grid {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
   grid-template-rows: repeat(4, 1fr);
-  gap: 1.2vw;
-  padding: 1vw 0;
+  gap: 0.6vw 0.8vw;
   z-index: 2;
+  margin: 0.5vw 0;
 }
 
-.station-btn {
-  background: rgba(0, 0, 0, 0.4);
-  border: 1px solid rgba(16, 48, 36, 0.5);
+.ch-cell {
+  background: rgba(0, 0, 0, 0.45);
+  border: 1px solid rgba(18, 56, 44, 0.4);
   color: var(--vfd-dim);
   cursor: pointer;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
   font-family: inherit;
-  font-size: 2vw;
-  border-radius: 2px;
+  padding: 0.3vw 0.2vw;
+  border-radius: 1px;
   position: relative;
-  transition: all 0.15s ease;
-  letter-spacing: 1px;
+  transition: all 0.1s ease;
 }
 
-/* Sönük VFD segment arka plan detayları */
-.station-btn::after {
-  content: "888";
+/* Sönük 16-segment arka plan deseni (Görseldeki o çapraz çizgili kutucuklar) */
+.ch-cell::before {
+  content: "ZZZ";
   position: absolute;
-  font-size: 1.8vw;
-  color: rgba(16, 48, 36, 0.2);
-  letter-spacing: 2px;
+  font-size: 1.4vw;
+  color: rgba(18, 56, 44, 0.22);
+  letter-spacing: 1px;
   pointer-events: none;
   z-index: 1;
 }
 
-.station-btn span {
+.ch-cell span {
   position: relative;
   z-index: 2;
+  line-height: 1.1;
 }
 
-.station-btn.active {
+.ch-cell .c-num { font-size: 1.3vw; }
+.ch-cell .c-name { font-size: 1.3vw; font-weight: bold; }
+
+/* AKTİF KANAL PARILTISI */
+.ch-cell.active {
   border-color: var(--vfd-on);
   color: var(--vfd-on);
-  background: rgba(57, 255, 202, 0.06);
-  text-shadow: 0 0 10px var(--vfd-glow), 0 0 20px rgba(57,255,202,0.3);
-  box-shadow: inset 0 0 8px rgba(57, 255, 202, 0.2);
+  background: rgba(57, 255, 202, 0.08);
+  text-shadow: 0 0 10px var(--vfd-glow);
+  box-shadow: inset 0 0 8px rgba(57, 255, 202, 0.3);
 }
-.station-btn.active::after { display: none; }
+.ch-cell.active::before { display: none; }
 
-.station-btn .num { margin-right: 0.5vw; }
-.station-btn .name { font-weight: bold; }
-
-/* ALT PANEL */
-.bottom-deck {
+/* ALT KONTROL VE KAYAN YAZI */
+.vfd-bottom {
   display: flex;
   flex-direction: column;
-  gap: 0.6vw;
-  flex-shrink: 0;
+  gap: 0.4vw;
   z-index: 2;
 }
 
-.controls-row {
+.ctrl-bar {
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 
-.media-group {
+.btn-group {
   display: flex;
-  gap: 1.2vw;
-  align-items: center;
+  gap: 1vw;
 }
 
-.ctrl-btn {
-  background: rgba(0,0,0,0.4);
+.vfd-btn {
+  background: rgba(0,0,0,0.5);
   border: 1px solid var(--vfd-dim);
   color: var(--vfd-dim);
   font-family: inherit;
-  font-size: 1.8vw;
-  padding: 0.1vw 0.9vw;
+  font-size: 1.3vw;
+  padding: 0.1vw 0.8vw;
   cursor: pointer;
-  border-radius: 2px;
+  border-radius: 1px;
   transition: all 0.1s ease;
-  letter-spacing: 1px;
 }
-.ctrl-btn.active, .ctrl-btn:hover {
+.vfd-btn.active, .vfd-btn:hover {
   border-color: var(--vfd-on);
   color: var(--vfd-on);
-  text-shadow: 0 0 8px var(--vfd-glow);
-  background: rgba(57, 255, 202, 0.08);
+  text-shadow: 0 0 6px var(--vfd-glow);
+  background: rgba(57, 255, 202, 0.1);
 }
 
-/* MARQUEE KAYAN YAZI BANDI */
-.marquee-wrapper {
+/* MARQUEE KAYAN YAZI */
+.ticker-box {
   border-top: 1px dashed var(--vfd-dim);
-  padding-top: 0.6vw;
+  padding-top: 0.3vw;
   overflow: hidden;
   white-space: nowrap;
   display: flex;
 }
-.marquee-text {
+.ticker-text {
   display: inline-block;
-  font-size: 2.2vw;
+  font-size: 1.5vw;
   color: var(--vfd-on);
-  text-shadow: 0 0 10px var(--vfd-glow);
-  letter-spacing: 2.5px;
-  animation: marqueeScroll 25s linear infinite;
+  text-shadow: 0 0 8px var(--vfd-glow);
+  letter-spacing: 2px;
+  animation: scrollText 25s linear infinite;
 }
-@keyframes marqueeScroll {
+@keyframes scrollText {
   0% { transform: translateX(100%); }
   100% { transform: translateX(-100%); }
 }
@@ -202,35 +240,47 @@ body, html { width: 100%; height: 100%; background: #000; display: flex; align-i
 </head>
 <body>
 
-<div class="vfd-housing">
-  <div class="glass-glare"></div>
+<div class="pcb-board">
+  <div class="screw screw-tl"></div>
+  <div class="screw screw-tr"></div>
+  <div class="screw screw-bl"></div>
+  <div class="screw screw-br"></div>
 
-  <!-- ÜST PANEL -->
-  <div class="top-deck">
-    <div class="vfd-text" id="lbl-date">TUE NOV 17</div>
-    <div class="top-sub">
-      <span class="active">FM ST</span> | PRESET <span id="lbl-preset">1</span>
-    </div>
-    <div class="vfd-text" id="lbl-time">12:57:02</div>
+  <div class="pcb-header">
+    <span>KRAVTS // CYBER-VFD</span>
+    <span>REV 1.2</span>
   </div>
 
-  <!-- ORTA PANEL (20 RADYO KANALI) -->
-  <div class="grid-container" id="radioGrid"></div>
+  <div class="vfd-glass-panel">
+    <!-- ÜST BİLGİ -->
+    <div class="vfd-top">
+      <div class="vfd-main-title" id="lbl-date">TUE NOV 17</div>
+      <div class="vfd-sub-info"><span class="active">FM ST</span> PRESET <span id="lbl-preset">1</span></div>
+      <div class="vfd-main-title" id="lbl-time">12:57:02</div>
+    </div>
 
-  <!-- ALT PANEL -->
-  <div class="bottom-deck">
-    <div class="controls-row">
-      <div class="media-group">
-        <button class="ctrl-btn" onclick="prevStation()">[&lt; PREV CH]</button>
-        <button class="ctrl-btn active" id="btn-play" onclick="playAudio()">[PLAY]</button>
-        <button class="ctrl-btn" id="btn-stop" onclick="stopAudio()">[STOP]</button>
-        <button class="ctrl-btn" onclick="nextStation()">[NEXT CH &gt;]</button>
+    <!-- ORTA 20'Lİ KANAL IZGARASI -->
+    <div class="vfd-grid" id="radioGrid"></div>
+
+    <!-- ALT KONTROLLER VE KANALLAR -->
+    <div class="vfd-bottom">
+      <div class="ctrl-bar">
+        <div class="btn-group">
+          <button class="vfd-btn" onclick="prevStation()">[&lt; PREV]</button>
+          <button class="vfd-btn active" id="btn-play" onclick="playAudio()">[PLAY]</button>
+          <button class="vfd-btn" id="btn-stop" onclick="stopAudio()">[STOP]</button>
+          <button class="vfd-btn" onclick="nextStation()">[NEXT &gt;]</button>
+        </div>
+        <div style="font-size: 1.1vw; color: var(--vfd-dim); letter-spacing: 1px;">KRAVTS RAD.430</div>
       </div>
-      <div style="font-size: 1.6vw; color: var(--vfd-dim); letter-spacing: 1.5px;">KRAVTS VFD.430</div>
+      <div class="ticker-box">
+        <div class="ticker-text" id="lbl-status">«« NOW PLAYING: 01 NIGHTRIDE FM Stereo Stream Online ««</div>
+      </div>
     </div>
-    <div class="marquee-wrapper">
-      <div class="marquee-text" id="lbl-status">«« NOW PLAYING: 01 NIGHTRIDE FM Stereo Stream Online ««</div>
-    </div>
+  </div>
+
+  <div class="pcb-header" style="justify-content: flex-end; font-size: 0.9vw;">
+    <span style="color: #1b4d34;">###-CABLE-BUS-###</span>
   </div>
 </div>
 
@@ -266,14 +316,14 @@ let activeIndex = 0;
 const grid = document.getElementById("radioGrid");
 stations.forEach((st, idx) => {
   const btn = document.createElement("button");
-  btn.className = `station-btn ${idx === 0 ? 'active' : ''}`;
+  btn.className = `ch-cell ${idx === 0 ? 'active' : ''}`;
   btn.onclick = () => selectStation(idx);
-  btn.innerHTML = `<span class="num">${st.num}</span><span class="name">${st.name}</span>`;
+  btn.innerHTML = `<span class="c-num">${st.num}</span><span class="c-name">${st.name}</span>`;
   grid.appendChild(btn);
 });
 
 function selectStation(idx) {
-  document.querySelectorAll(".station-btn").forEach((b, i) => {
+  document.querySelectorAll(".ch-cell").forEach((b, i) => {
     b.classList.toggle("active", i === idx);
   });
   activeIndex = idx;
