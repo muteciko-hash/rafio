@@ -1,386 +1,154 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-<title>KRAVTS // CYBER-VFD MODULE 1.2</title>
-<link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<title>KRAVTS // CYBER-VFD</title>
 <style>
-:root {
-  --vfd-bg: #030605;
-  --vfd-on: #39ffca;
-  --vfd-glow: rgba(57, 255, 202, 0.55);
-  --vfd-dim: #224235;
-  --pcb-green: #143826;
-  --pcb-edge: #0c2418;
-}
+html,body{margin:0;height:100%;background:#000;overflow:hidden;-webkit-user-select:none;user-select:none;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+#bz{position:fixed;inset:0;box-sizing:border-box;border-radius:22px;background:linear-gradient(160deg,#3b3c3f 0%,#1c1d1f 45%,#0d0d0f 100%);
+padding:calc(13px + env(safe-area-inset-top)) calc(13px + env(safe-area-inset-right)) calc(13px + env(safe-area-inset-bottom)) calc(13px + env(safe-area-inset-left));
+box-shadow:inset 0 2px 1px rgba(255,255,255,.2),inset 0 -3px 6px rgba(0,0,0,.85),inset 0 0 0 3px #131315}
+#gl{position:relative;height:100%;box-sizing:border-box;border-radius:8px;background:#03080a;padding:6px 8px;overflow:hidden;
+box-shadow:0 0 0 2px #000,0 0 0 3px #3a3b3e,inset 0 0 28px rgba(0,0,0,.95)}
+#gl::before{content:"";position:absolute;inset:0;z-index:2;pointer-events:none;background:linear-gradient(transparent calc(31% - .5px),rgba(0,0,0,.6) calc(31% - .5px) calc(31% + .5px),transparent calc(31% + .5px)),linear-gradient(transparent calc(69% - .5px),rgba(0,0,0,.6) calc(69% - .5px) calc(69% + .5px),transparent calc(69% + .5px)),repeating-linear-gradient(90deg,rgba(0,0,0,.07) 0 1px,transparent 1px 4px)}
+#gl::after{content:"";position:absolute;inset:0;z-index:2;pointer-events:none;background:repeating-linear-gradient(0deg,rgba(0,0,0,.14) 0 1px,transparent 1px 3px),linear-gradient(115deg,rgba(255,255,255,.1),transparent 30%),radial-gradient(ellipse at center,transparent 60%,rgba(0,0,0,.45))}
+#dim{position:absolute;inset:0;z-index:3;background:#000;opacity:0;pointer-events:none}
+@keyframes fl{0%,100%{opacity:1}7%{opacity:.955}23%{opacity:.99}41%{opacity:.965}58%{opacity:1}77%{opacity:.975}}
+#g,#mq{animation:fl 3.7s infinite}
+:root{--on:#e4ffff;--g1:#6ff;--g2:rgba(0,225,255,.85);--acc:#ffc857}
+:root[data-t="1"]{--on:#dcffe2;--g1:#6f9;--g2:rgba(0,255,110,.8);--acc:#ffc857}
+:root[data-t="2"]{--on:#ffe6b8;--g1:#fb5;--g2:rgba(255,150,0,.85);--acc:#8ff}
+:root[data-t="3"]{--on:#ffdcd6;--g1:#f66;--g2:rgba(255,40,30,.85);--acc:#ffc88a}
+@media (orientation:portrait){#bz{inset:auto;top:0;left:100%;width:100vh;height:100vw;width:100dvh;height:100dvw;transform-origin:0 0;transform:rotate(90deg)}}
+#stage{position:relative;height:100%}
+#g{height:100%;display:grid;grid-template-columns:repeat(35,1fr);grid-template-rows:repeat(9,1fr);filter:drop-shadow(0 0 2px var(--g1)) drop-shadow(0 0 8px var(--g2))}
+#mq{position:absolute;left:0;right:0;bottom:0;height:11.1111%;overflow:hidden;pointer-events:none;filter:drop-shadow(0 0 2px var(--g1)) drop-shadow(0 0 8px var(--g2))}
+#st{display:flex;height:100%;will-change:transform}
+#st .c{flex:0 0 var(--cw,18px)}
+.c{min-width:0;min-height:0;box-sizing:border-box}
+.c svg{width:100%;height:100%;display:block}
+.s{fill:#6a6a5c;opacity:.07;transition:opacity .5s ease-out,fill .5s ease-out}
+.p,.q{fill:var(--on);opacity:0}
+.on{fill:var(--on);opacity:1;transition:opacity .04s,fill .04s}
+.c.acc .on{fill:var(--acc)}
+.p.on,.q.on{opacity:1}
+.c[data-l=md] .s.on{opacity:.55}
+.c[data-l=lo] .s.on{opacity:.25}
 
-* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; margin: 0; padding: 0; }
-body, html {
-  width: 100vw;
-  height: 100vh;
-  height: 100dvh;
-  background: #000;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-  font-family: 'VT323', monospace;
-  user-select: none;
-  -webkit-user-select: none;
-}
-
-/* YEŞİL DEVRE KARTI (PCB) DIŞ KASASI - GÖNDERDİĞİN FOTOĞRAFIN BİREBİR ORTAMI */
-.pcb-board {
-  width: 96vw;
-  height: 54vw;
-  max-width: 1400px;
-  max-height: 787px;
-  background-color: var(--pcb-green);
-  background-image: linear-gradient(135deg, #1b4d34 0%, #0d291b 100%);
-  border: 0.8vw solid var(--pcb-edge);
-  border-radius: 6px;
-  box-shadow: 0 0 30px rgba(0,0,0,0.9), inset 0 0 15px rgba(0,0,0,0.6);
-  padding: 1.2vw 1.8vw;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  position: relative;
-}
-
-/* PCB KÖŞE VİDALARI */
-.screw {
-  position: absolute;
-  width: 1.2vw; height: 1.2vw;
-  background: radial-gradient(circle, #ccc 30%, #555 70%, #111 100%);
-  border-radius: 50%;
-  box-shadow: inset 0 0 2px #000;
-}
-.screw-tl { top: 0.6vw; left: 0.6vw; }
-.screw-tr { top: 0.6vw; right: 0.6vw; }
-.screw-bl { bottom: 0.6vw; left: 0.6vw; }
-.screw-br { bottom: 0.6vw; right: 0.6vw; }
-
-/* PCB ÜSTÜNDEKİ YAZILAR VE ETİKETLER */
-.pcb-header {
-  display: flex;
-  justify-content: space-between;
-  font-size: 1.1vw;
-  color: #3b7a57;
-  letter-spacing: 1.5px;
-  padding: 0 0.5vw;
-  text-transform: uppercase;
-}
-
-/* VFD CAM EKRAN ÇERÇEVESİ (KOYU GÜMÜŞ/SİYAH METAL ÇERÇEVE) */
-.vfd-glass-panel {
-  flex: 1;
-  background-color: var(--vfd-bg);
-  background-image: 
-    linear-gradient(90deg, rgba(255,140,60,0.03) 1px, transparent 1px),
-    linear-gradient(180deg, rgba(0,0,0,0.4) 0%, rgba(2,5,4,0.95) 100%);
-  background-size: 3vw 100%, 100% 100%;
-  border: 0.5vw solid #1b2621;
-  box-shadow: inset 0 0 25px #000;
-  padding: 1vw 1.5vw;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  position: relative;
-  margin: 0.6vw 0;
-}
-
-/* VFD CAM TARAMA VE FLAMAN ÇİZGİLERİ */
-.vfd-glass-panel::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: repeating-linear-gradient(0deg, rgba(0,0,0,0.2), rgba(0,0,0,0.2) 1px, transparent 1px, transparent 3px);
-  pointer-events: none;
-  z-index: 10;
-}
-
-/* ÜST BİLGİ SATIRI */
-.vfd-top {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  z-index: 2;
-}
-.vfd-main-title {
-  font-size: 2.8vw;
-  color: var(--vfd-on);
-  text-shadow: 0 0 8px var(--vfd-glow);
-  letter-spacing: 2px;
-}
-.vfd-sub-info {
-  font-size: 1.2vw;
-  color: var(--vfd-dim);
-  letter-spacing: 2px;
-}
-.vfd-sub-info span.active {
-  color: var(--vfd-on);
-  text-shadow: 0 0 5px var(--vfd-glow);
-}
-
-/* 20 KANAL IZGARASI (GÖNDERDİĞİN GÖRSELDEKİ SÖNÜK 16-SEGMENT KUTULAR) */
-.vfd-grid {
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  grid-template-rows: repeat(4, 1fr);
-  gap: 0.6vw 0.8vw;
-  z-index: 2;
-  margin: 0.5vw 0;
-}
-
-.ch-cell {
-  background: rgba(0, 0, 0, 0.45);
-  border: 1px solid rgba(18, 56, 44, 0.4);
-  color: var(--vfd-dim);
-  cursor: pointer;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-family: inherit;
-  padding: 0.3vw 0.2vw;
-  border-radius: 1px;
-  position: relative;
-  transition: all 0.1s ease;
-}
-
-/* Sönük 16-segment arka plan deseni (Görseldeki o çapraz çizgili kutucuklar) */
-.ch-cell::before {
-  content: "ZZZ";
-  position: absolute;
-  font-size: 1.4vw;
-  color: rgba(18, 56, 44, 0.22);
-  letter-spacing: 1px;
-  pointer-events: none;
-  z-index: 1;
-}
-
-.ch-cell span {
-  position: relative;
-  z-index: 2;
-  line-height: 1.1;
-}
-
-.ch-cell .c-num { font-size: 1.3vw; }
-.ch-cell .c-name { font-size: 1.3vw; font-weight: bold; }
-
-/* AKTİF KANAL PARILTISI */
-.ch-cell.active {
-  border-color: var(--vfd-on);
-  color: var(--vfd-on);
-  background: rgba(57, 255, 202, 0.08);
-  text-shadow: 0 0 10px var(--vfd-glow);
-  box-shadow: inset 0 0 8px rgba(57, 255, 202, 0.3);
-}
-.ch-cell.active::before { display: none; }
-
-/* ALT KONTROL VE KAYAN YAZI */
-.vfd-bottom {
-  display: flex;
-  flex-direction: column;
-  gap: 0.4vw;
-  z-index: 2;
-}
-
-.ctrl-bar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.btn-group {
-  display: flex;
-  gap: 1vw;
-}
-
-.vfd-btn {
-  background: rgba(0,0,0,0.5);
-  border: 1px solid var(--vfd-dim);
-  color: var(--vfd-dim);
-  font-family: inherit;
-  font-size: 1.3vw;
-  padding: 0.1vw 0.8vw;
-  cursor: pointer;
-  border-radius: 1px;
-  transition: all 0.1s ease;
-}
-.vfd-btn.active, .vfd-btn:hover {
-  border-color: var(--vfd-on);
-  color: var(--vfd-on);
-  text-shadow: 0 0 6px var(--vfd-glow);
-  background: rgba(57, 255, 202, 0.1);
-}
-
-/* MARQUEE KAYAN YAZI */
-.ticker-box {
-  border-top: 1px dashed var(--vfd-dim);
-  padding-top: 0.3vw;
-  overflow: hidden;
-  white-space: nowrap;
-  display: flex;
-}
-.ticker-text {
-  display: inline-block;
-  font-size: 1.5vw;
-  color: var(--vfd-on);
-  text-shadow: 0 0 8px var(--vfd-glow);
-  letter-spacing: 2px;
-  animation: scrollText 25s linear infinite;
-}
-@keyframes scrollText {
-  0% { transform: translateX(100%); }
-  100% { transform: translateX(-100%); }
-}
 </style>
 </head>
 <body>
-
-<div class="pcb-board">
-  <div class="screw screw-tl"></div>
-  <div class="screw screw-tr"></div>
-  <div class="screw screw-bl"></div>
-  <div class="screw screw-br"></div>
-
-  <div class="pcb-header">
-    <span>KRAVTS // CYBER-VFD</span>
-    <span>REV 1.2</span>
-  </div>
-
-  <div class="vfd-glass-panel">
-    <!-- ÜST BİLGİ -->
-    <div class="vfd-top">
-      <div class="vfd-main-title" id="lbl-date">TUE NOV 17</div>
-      <div class="vfd-sub-info"><span class="active">FM ST</span> PRESET <span id="lbl-preset">1</span></div>
-      <div class="vfd-main-title" id="lbl-time">12:57:02</div>
-    </div>
-
-    <!-- ORTA 20'Lİ KANAL IZGARASI -->
-    <div class="vfd-grid" id="radioGrid"></div>
-
-    <!-- ALT KONTROLLER VE KANALLAR -->
-    <div class="vfd-bottom">
-      <div class="ctrl-bar">
-        <div class="btn-group">
-          <button class="vfd-btn" onclick="prevStation()">[&lt; PREV]</button>
-          <button class="vfd-btn active" id="btn-play" onclick="playAudio()">[PLAY]</button>
-          <button class="vfd-btn" id="btn-stop" onclick="stopAudio()">[STOP]</button>
-          <button class="vfd-btn" onclick="nextStation()">[NEXT &gt;]</button>
-        </div>
-        <div style="font-size: 1.1vw; color: var(--vfd-dim); letter-spacing: 1px;">KRAVTS RAD.430</div>
-      </div>
-      <div class="ticker-box">
-        <div class="ticker-text" id="lbl-status">«« NOW PLAYING: 01 NIGHTRIDE FM Stereo Stream Online ««</div>
-      </div>
-    </div>
-  </div>
-
-  <div class="pcb-header" style="justify-content: flex-end; font-size: 0.9vw;">
-    <span style="color: #1b4d34;">###-CABLE-BUS-###</span>
-  </div>
-</div>
-
-<audio id="audioPlayer" preload="none"></audio>
-
+<div id="bz"><div id="gl"><div id="stage"><div id="g"></div><div id="mq"><div id="st"></div></div></div><div id="dim"></div></div></div>
 <script>
-const stations = [
-  { num: "01", name: "NIGHT", url: "https://stream.nightride.fm/nightride.mp3", desc: "NIGHTRIDE FM - Synthwave & Darksynth" },
-  { num: "02", name: "DARK", url: "https://stream.nightride.fm/darksynth.mp3", desc: "DARKSYNTH - Cyberpunk & Dark Electro" },
-  { num: "03", name: "CHILL", url: "https://stream.nightride.fm/chillsynth.mp3", desc: "CHILLSYNTH - Relaxing Retrowave" },
-  { num: "04", name: "DATA", url: "https://stream.nightride.fm/datawave.mp3", desc: "DATAWAVE - Ambient & Cyber Beats" },
-  { num: "05", name: "HORROR", url: "https://stream.nightride.fm/horrorsynth.mp3", desc: "HORRORSYNTH - Dark Cinematic Soundtracks" },
-  { num: "06", name: "SPACE", url: "https://stream.nightride.fm/spacesynth.mp3", desc: "SPACESYNTH - Cosmic Electronic Voyage" },
-  { num: "07", name: "DEFCON", url: "https://ice2.somafm.com/defcon-128-mp3", desc: "SOMA FM DEFCON - Hacker & Electronic Music" },
-  { num: "08", name: "SPACEST", url: "https://ice2.somafm.com/spacestation-128-mp3", desc: "SOMA FM SPACESTATION - Ambient & Space" },
-  { num: "09", name: "DARKZN", url: "https://ice2.somafm.com/darkzone-128-mp3", desc: "SOMA FM DARK ZONE - Industrial & Ambient" },
-  { num: "10", name: "PLAZA", url: "https://radio.plaza.one/mp3", desc: "PLAZA.ONE - 80s Vapourwave & Synth" },
-  { num: "11", name: "BOOT", url: "https://ice2.somafm.com/bootliquor-128-mp3", desc: "SOMA FM BOOT LIQUOR - Americana & Country" },
-  { num: "12", name: "REAL", url: "https://listen.181fm.com/181-realcountry_128k.mp3", desc: "181.FM REAL COUNTRY - Classic Country Hits" },
-  { num: "13", name: "HWY181", url: "https://listen.181fm.com/181-highway_128k.mp3", desc: "181.FM HIGHWAY 181 - Trucker Country" },
-  { num: "14", name: "80SCTY", url: "https://listen.181fm.com/181-80scountry_128k.mp3", desc: "181.FM 80S COUNTRY - Retro Country Gold" },
-  { num: "15", name: "FRNTPCH", url: "https://listen.181fm.com/181-frontporch_128k.mp3", desc: "181.FM FRONT PORCH - Acoustic & Country" },
-  { num: "16", name: "GROOVE", url: "https://ice2.somafm.com/groovesalad-128-mp3", desc: "SOMA FM GROOVE SALAD - Downtambient" },
-  { num: "17", name: "SECAGT", url: "https://ice2.somafm.com/secretagent-128-mp3", desc: "SOMA FM SECRET AGENT - Spy & Lounge Beats" },
-  { num: "18", name: "DRONE", url: "https://ice2.somafm.com/dronezone-128-mp3", desc: "SOMA FM DRONE ZONE - Atmospheric Ambient" },
-  { num: "19", name: "EAGLE", url: "https://listen.181fm.com/181-eagle_128k.mp3", desc: "181.FM THE EAGLE - Classic Rock & Night" },
-  { num: "20", name: "YACHT", url: "https://listen.181fm.com/181-yachtrock_128k.mp3", desc: "181.FM YACHT ROCK - Smooth 70s & 80s" }
+// ---- İSTASYONLAR: buradan değiştir / ekle (en fazla 15). nr = Nightride kodu, so = SomaFM kodu ----
+const ST=[
+{n:'NIGHT',t:'NIGHTRIDE FM SYNTHWAVE',nr:'nightride',u:'https://stream.nightride.fm/nightride.mp3'},
+{n:'DARK',t:'DARKSYNTH - DARK CINEMATIC NIGHT DRIVE',nr:'darksynth',u:'https://stream.nightride.fm/darksynth.mp3'},
+{n:'CHILL',t:'CHILLSYNTH - CHILLWAVE FOR THE ROAD',nr:'chillsynth',u:'https://stream.nightride.fm/chillsynth.mp3'},
+{n:'DATA',t:'DATAWAVE - CYBERPUNK ELECTRONICS',nr:'datawave',u:'https://stream.nightride.fm/datawave.mp3'},
+{n:'HORROR',t:'HORRORSYNTH - DARK CINEMATIC',nr:'horrorsynth',u:'https://stream.nightride.fm/horrorsynth.mp3'},
+{n:'SPACE',t:'SPACESYNTH - SPACE DISCO',nr:'spacesynth',u:'https://stream.nightride.fm/spacesynth.mp3'},
+{n:'EBSM',t:'EBSM - INDUSTRIAL / DARKWAVE / EBM',nr:'ebsm',u:'https://stream.nightride.fm/ebsm.mp3'},
+{n:'ZONE',t:'SOMAFM DARK ZONE',so:'darkzone',u:'https://ice1.somafm.com/darkzone-128-mp3'},
+{n:'DEEP',t:'SOMAFM DEEP SPACE ONE',so:'deepspaceone',u:'https://ice1.somafm.com/deepspaceone-128-mp3'},
+{n:'BOOT',t:'BOOT LIQUOR - COUNTRY / AMERICANA ROOTS',so:'bootliquor',u:'https://ice.somafm.com/bootliquor'},
+{n:'DOOM',t:'DOOMED - DARK INDUSTRIAL AMBIENT',so:'doomed',u:'https://ice1.somafm.com/doomed-128-mp3'},
+{n:'SYNPH',t:'SYNPHAERA - ELECTRONIC AMBIENT',so:'synphaera',u:'https://ice.somafm.com/synphaera'},
+{n:'VAPOR',t:'VAPORWAVES - ALL VAPORWAVE',so:'vaporwaves',u:'https://ice.somafm.com/vaporwaves'},
+{n:'U80S',t:'UNDERGROUND 80S - SYNTHPOP / NEW WAVE',so:'u80s',u:'https://ice1.somafm.com/u80s-128-mp3'},
+{n:'GROOVE',t:'GROOVE SALAD - DOWNTEMPO CHILL',so:'groovesalad',u:'https://ice1.somafm.com/groovesalad-128-mp3'}
 ];
+const P={a:'2,0.8 8,0.8 7,2.4 3,2.4',b:'9.2,1.4 9.2,7.3 7.7,6.5 7.7,2.8',c:'9.2,8.7 9.2,14.6 7.7,13.2 7.7,9.5',d:'2,15.2 8,15.2 7,13.6 3,13.6',
+e:'0.8,8.7 0.8,14.6 2.3,13.2 2.3,9.5',f:'0.8,1.4 0.8,7.3 2.3,6.5 2.3,2.8',g:'1.5,8 2.7,7.1 4.6,7.1 4.6,8.9 2.7,8.9',G:'8.5,8 7.3,7.1 5.4,7.1 5.4,8.9 7.3,8.9',
+h:'2.3,3.1 3.5,3.1 4.8,6.4 3.6,6.4',i:'4.2,3 5.8,3 5.8,6.6 4.2,6.6',j:'7.7,3.1 6.5,3.1 5.2,6.4 6.4,6.4',
+k:'4.8,9.6 3.6,9.6 2.3,12.9 3.5,12.9',l:'4.2,9.4 5.8,9.4 5.8,13 4.2,13',m:'5.2,9.6 6.4,9.6 7.7,12.9 6.5,12.9'};
+const F={A:'abcefgG',B:'abcdilG',C:'adef',D:'abcdil',E:'adefgG',F:'aefgG',G:'acdefG',H:'bcefgG',I:'adil',J:'bcde',K:'efgjm',L:'def',M:'bcefhj',N:'bcefhm',
+O:'abcdef',P:'abefgG',Q:'abcdefm',R:'abefgGm',S:'acdfgG',T:'ail',U:'bcdef',V:'efjk',W:'bcefkm',X:'hjkm',Y:'hjl',Z:'adjk',
+0:'abcdef',1:'bc',2:'abdegG',3:'abcdG',4:'bcfgG',5:'acdfgG',6:'acdefgG',7:'abc',8:'abcdefgG',9:'abcdfgG',
+'-':'gG','/':'jk','<':'jm','>':'hk','[':'adef',']':'abcd','+':'gGil','_':'d','*':'ghjkilmG','°':'abfgG'};
+let SV='<svg viewBox="0 0 10 16" preserveAspectRatio="xMidYMid meet">';
+for(const k in P)SV+='<polygon class="s" data-k="'+k+'" points="'+P[k]+'"/>';
+SV+='<circle class="p" data-k="p" cx="8.6" cy="14.3" r=".9"/><circle class="q" data-k="q" cx="5" cy="5" r=".9"/><circle class="q" data-k="q" cx="5" cy="11" r=".9"/></svg>';
+const C=35,R=9,g=document.getElementById('g'),st=document.getElementById('st'),stage=document.getElementById('stage'),cells=[];
+function mk(){const d=document.createElement('div');d.className='c';d.innerHTML=SV;d._s=[...d.querySelectorAll('[data-k]')];return d}
+for(let r=0;r<R;r++){cells[r]=[];for(let c=0;c<C;c++){const d=mk();g.appendChild(d);cells[r][c]=d;}}
+function setCh(d,ch,l){if(d._c===ch&&d._l===l)return;d._c=ch;d._l=l;
+const on=ch===':'?'q':ch==='.'?'p':(F[ch]||'');
+d._s.forEach(e=>e.classList.toggle('on',on.includes(e.dataset.k)));d.dataset.l=l;}
+function put(r,c,s,l,a){for(let i=0;i<s.length&&c+i<C;i++){const d=cells[r][c+i];setCh(d,s[i],l);if(a!==undefined)d.dataset.a=a;}}
+const ea=new Audio(),eb=new Audio();ea.crossOrigin='anonymous';ea.preload='none';eb.preload='none';
+let au=null,actx=null,an=null,srcNode=null,eqd=null,zero=0,real=false,unl=false,tok=0;const NC=new Set();
+const SIL='data:audio/wav;base64,UklGRigAAABXQVZFZm10IBAAAAABAAIARKwAABCxAgAEABAAZGF0YQQAAAAAAA==';
+let sel=0,playing=false,err=false,mq=' ',song='',off=0,cw=18,last=0;
+function pad(n){return String(n).padStart(2,'0')}
+function cl(s){return s.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toUpperCase().replace(/&/g,'+').replace(/\(/g,'[').replace(/\)/g,']').replace(/\|/g,'/').replace(/[^A-Z0-9 \-\/<>\[\]+_.:*]/g,' ').replace(/\s+/g,' ')}
+function build(){const len=mq.length,k=Math.ceil(C/len)+1;st.textContent='';
+for(let n=0;n<k;n++)for(let i=0;i<len;i++){const d=mk();setCh(d,mq[i],'hi');st.appendChild(d);}}
+function setMq(reset){const s=ST[sel];
+const t=err?'STREAM ERROR - TAP A PRESET TO RETRY':playing?'NOW PLAYING: '+pad(sel+1)+' '+s.n+' / '+(song||'LIVE STREAM')+' / '+s.t:'STOPPED - TAP A PRESET TO PLAY';
+mq=cl(t)+'   ';off=reset?0:off%(mq.length*cw);build();}
+function size(){cw=stage.clientWidth/C;st.style.setProperty('--cw',cw+'px');}
+function draw(){
+for(let r=1;r<=7;r++)for(let c=0;c<C;c++){setCh(cells[r][c],' ','md');cells[r][c].dataset.a='';cells[r][c].classList.remove('sel');}
+for(let i=0;i<15;i++){const r=1+((i/5)|0)*2,c=(i%5)*7,s=ST[i],on=i===sel;
 
-const ap = document.getElementById("audioPlayer");
-let activeIndex = 0;
+if(s){put(r+1,c,s.n,on?'hi':'md');
+for(let k=0;k<7;k++){cells[r][c+k].dataset.a='s'+i;cells[r+1][c+k].dataset.a='s'+i;}
+if(on)for(let k=0;k<6;k++)cells[r+1][c+k].classList.add('sel');}}
+put(7,0,'[PLAY]',playing?'hi':'md','play');put(7,7,'[STOP]',playing?'md':'hi','stop');put(7,14,'BRT '+br,'md','br');put(7,20,TN[th].padEnd(5),'md','th');put(7,28,'RAD.430','md');
+showT();size();setMq(true);}
+const D=['SUN','MON','TUE','WED','THU','FRI','SAT'],M=['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
+function tick(){if(booting)return;const n=new Date();
+put(0,0,D[n.getDay()]+' '+M[n.getMonth()]+' '+pad(n.getDate()),'hi');
+put(0,27,pad(n.getHours())+':'+pad(n.getMinutes())+':'+pad(n.getSeconds()),'hi');}
+function frame(t){const dt=last?Math.min(t-last,50):0;last=t;
+off+=cw*6*dt/1000;const L=mq.length*cw;if(off>=L)off-=L;
+st.style.transform='translate3d('+(-off)+'px,0,0)';eq(t,dt);requestAnimationFrame(frame);}
+// şarkı bilgisi
+let es=null,NM={};
+function nr(){if(es||!window.EventSource)return;try{es=new EventSource('https://nightride.fm/meta');
+es.onmessage=e=>{try{const a=JSON.parse(e.data);(Array.isArray(a)?a:[a]).forEach(x=>{if(x&&x.station)NM[x.station]=[x.artist,x.title].filter(Boolean).join(' - ')});upd();}catch(_){}};}catch(_){}}
+async function soma(c){try{const j=await(await fetch('https://somafm.com/songs/'+c+'.json')).json();const x=j.songs&&j.songs[0];return x?x.artist+' - '+x.title:'';}catch(_){return '';}}
+async function upd(){const s=ST[sel];let v='';if(playing&&s){if(s.nr)v=NM[s.nr]||'';else if(s.so)v=await soma(s.so);}
+if(v!==song){song=v;setMq(false);}}
+setInterval(()=>{if(playing)upd();},20000);
+function unlock(){if(unl)return;unl=true;[ea,eb].forEach(e=>{try{e.src=SIL;const p=e.play();if(p&&p.catch)p.catch(()=>{});}catch(_){}});}
+function hook(){if(!actx)return;if(srcNode){real=true;return;}try{srcNode=actx.createMediaElementSource(ea);an=actx.createAnalyser();an.fftSize=64;an.smoothingTimeConstant=.6;eqd=new Uint8Array(an.frequencyBinCount);srcNode.connect(an);an.connect(actx.destination);real=true;}catch(_){real=false;}}
+function bad(tk,cors){if(tk!==tok)return;if(cors){NC.add(sel);go();}else{playing=false;err=true;draw();}}
+function go(){const tk=++tok,cors=!NC.has(sel);ea.pause();eb.pause();au=cors?ea:eb;real=false;zero=0;const a=au;a.src=ST[sel].u;a.onerror=()=>bad(tk,cors);
+const p=a.play();if(p&&p.then)p.then(()=>{if(tk===tok&&cors)hook();}).catch(()=>bad(tk,cors));}
+function playP(){err=false;playing=true;song='';try{if(!actx){const AC=window.AudioContext||window.webkitAudioContext;if(AC)actx=new AC();}if(actx&&actx.state!=='running')actx.resume();}catch(_){}unlock();go();draw();nr();upd();}
+const NB=15,lv=new Array(NB).fill(0),EQC=[' ','\u2581','\u2582','\u2583','\u2584','\u2585'];let eqT=0;
+F['\u2581']='d';F['\u2582']='dec';F['\u2583']='decgG';F['\u2584']='decgGfb';F['\u2585']='decgGfba';
+function eq(t,dt){eqT+=dt;if(eqT<45)return;const el=eqT;eqT=0;const s=t/1000,tg=new Array(NB).fill(0);
+if(playing&&au){if(real&&an){an.getByteFrequencyData(eqd);let sum=0;for(let i=0;i<NB;i++){const v=eqd[1+Math.round(i*(eqd.length-3)/(NB-1))];sum+=v;tg[i]=Math.min(5,v/42);}
+zero=sum===0?zero+el:0;if(zero>6000){NC.add(sel);go();}}
+else{const bt=Math.pow(Math.max(0,Math.sin(s*13.8)),6);for(let i=0;i<NB;i++){const b=(Math.sin(s*3+i*.9)+Math.sin(s*5.3+i*1.7)+Math.sin(s*1.7+i*.5)+3)/6;tg[i]=Math.min(5,b*5.2*(1-i/28)*(.5+.6*bt)+.4);}}}
+let ch='';for(let i=0;i<NB;i++){lv[i]=tg[i]>=lv[i]?tg[i]:Math.max(tg[i],lv[i]-.5);ch+=EQC[Math.max(0,Math.min(5,Math.round(lv[i])))];}
+put(1,11,ch,'hi');}
+function stopP(){tok++;playing=false;err=false;song='';au=null;real=false;[ea,eb].forEach(e=>{try{e.pause();e.removeAttribute('src');e.load();}catch(_){}});draw();}
 
-const grid = document.getElementById("radioGrid");
-stations.forEach((st, idx) => {
-  const btn = document.createElement("button");
-  btn.className = `ch-cell ${idx === 0 ? 'active' : ''}`;
-  btn.onclick = () => selectStation(idx);
-  btn.innerHTML = `<span class="c-num">${st.num}</span><span class="c-name">${st.name}</span>`;
-  grid.appendChild(btn);
-});
-
-function selectStation(idx) {
-  document.querySelectorAll(".ch-cell").forEach((b, i) => {
-    b.classList.toggle("active", i === idx);
-  });
-  activeIndex = idx;
-  const s = stations[idx];
-  document.getElementById("lbl-preset").innerText = s.num;
-  ap.pause();
-  ap.src = s.url;
-  playAudio();
-}
-
-function nextStation() {
-  let nextIdx = (activeIndex + 1) % stations.length;
-  selectStation(nextIdx);
-}
-
-function prevStation() {
-  let prevIdx = (activeIndex - 1 + stations.length) % stations.length;
-  selectStation(prevIdx);
-}
-
-function playAudio() {
-  const s = stations[activeIndex];
-  document.getElementById("lbl-status").innerText = `«« CONNECTING: ${s.desc} ... ««`;
-  document.getElementById("btn-play").classList.add("active");
-  document.getElementById("btn-stop").classList.remove("active");
-  ap.play()
-    .then(() => {
-      document.getElementById("lbl-status").innerText = `«« NOW PLAYING: ${s.num} - ${s.desc} // STEREO STREAM ONLINE ««`;
-    })
-    .catch(() => {
-      document.getElementById("lbl-status").innerText = `«« STREAM READY / PAUSED: ${s.num} ${s.name} ««`;
-    });
-}
-
-function stopAudio() {
-  ap.pause();
-  document.getElementById("btn-play").classList.remove("active");
-  document.getElementById("btn-stop").classList.add("active");
-  const s = stations[activeIndex];
-  document.getElementById("lbl-status").innerText = `«« STOPPED: ${s.num} ${s.name} ««`;
-}
-
-function updateClock() {
-  const now = new Date();
-  const days = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
-  const months = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
-  document.getElementById("lbl-date").innerText = `${days[now.getDay()]} ${months[now.getMonth()]} ${String(now.getDate()).padStart(2, "0")}`;
-  
-  const h = String(now.getHours()).padStart(2, "0");
-  const m = String(now.getMinutes()).padStart(2, "0");
-  const s = String(now.getSeconds()).padStart(2, "0");
-  document.getElementById("lbl-time").innerText = `${h}:${m}:${s}`;
-}
-setInterval(updateClock, 1000);
-updateClock();
-
-ap.src = stations[0].url;
+let wl=null;function wake(){try{if(navigator.wakeLock&&!wl)navigator.wakeLock.request('screen').then(x=>{wl=x;x.addEventListener('release',()=>wl=null)}).catch(()=>{});}catch(e){}}
+g.addEventListener('click',e=>{const t=e.target.closest('[data-a]');const a=t&&t.dataset.a;if(!a)return;wake();
+if(a[0]==='s'){sel=+a.slice(1);playP();}else if(a==='br'){br=br<=1?5:br-1;setBr();put(7,14,'BRT '+br,'md');}else if(a==='th'){th=(th+1)%4;setTh();put(7,20,TN[th].padEnd(5),'md');}else if(a==='play')playP();else stopP();});
+addEventListener('resize',()=>{size();setMq(false);});
+let br=5,temp=null,booting=true,lastLat=null,lastLon=null,lastT=0,place='',wxm='LOCATING',th=0;const TN=['CYAN','GREEN','AMBER','RED'];
+function setTh(){document.documentElement.dataset.t=th;try{localStorage.setItem('vfdth',th)}catch(_){}}
+try{br=+localStorage.getItem('vfdbr')||5}catch(_){}
+const dimEl=document.getElementById('dim'),BR=[0,.15,.3,.5,.75,1];
+function setBr(){dimEl.style.opacity=1-BR[br];try{localStorage.setItem('vfdbr',br)}catch(_){}}
+function showT(){const t=(temp===null?cl(wxm):temp+'°'+(place?' '+place:'')).slice(0,15);const L=(15-t.length)>>1;put(0,11,(' '.repeat(L)+t).padEnd(15),'hi');}
+function km(a,b,c,d){const x=(c-a)*111,y=(d-b)*111*Math.cos(a*Math.PI/180);return Math.sqrt(x*x+y*y)}
+async function wx(la,lo){try{const j=await(await fetch('https://api.open-meteo.com/v1/forecast?latitude='+la+'&longitude='+lo+'&current=temperature_2m')).json();const v=j.current&&j.current.temperature_2m;if(typeof v==='number')temp=Math.round(v);else wxm='NO DATA';}catch(_){wxm='NO NET';}
+try{const k=await(await fetch('https://api.bigdatacloud.net/data/reverse-geocode-client?latitude='+la+'&longitude='+lo+'&localityLanguage=tr')).json();place=cl(k.city||k.locality||k.principalSubdivision||'');}catch(_){}
+if(!booting)showT();}
+try{navigator.geolocation&&navigator.geolocation.watchPosition(p=>{const la=p.coords.latitude,lo=p.coords.longitude,n=Date.now();if(lastLat===null||km(lastLat,lastLon,la,lo)>3||n-lastT>600000){lastLat=la;lastLon=lo;lastT=n;wx(la,lo);}},()=>{wxm='NO LOC';if(!booting)showT();},{maximumAge:60000});}catch(_){}
+function boot(){st.style.visibility='hidden';for(let c=0;c<C;c++)setTimeout(()=>{for(let r=0;r<R;r++)cells[r][c]._s.forEach(e=>{if(!'pq'.includes(e.dataset.k))e.classList.add('on')})},c*28);
+setTimeout(()=>{booting=false;cells.forEach(r=>r.forEach(d=>{d._c=null;setCh(d,' ','md');}));draw();tick();st.style.visibility='visible';},C*28+500);}
+try{th=+localStorage.getItem('vfdth')||0}catch(_){}setBr();setTh();for(let c=11;c<26;c++)cells[0][c].classList.add('acc');draw();tick();setInterval(tick,250);requestAnimationFrame(frame);boot();
 </script>
 </body>
 </html>
