@@ -3,30 +3,34 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-<title>KRAVTS // REALISTIC CYBER-VFD RADIO</title>
+<title>KRAVTS // AUTHENTIC VFD MODULE RADIO</title>
 <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
 <style>
 :root {
-  --vfd-bg: #030605;
+  --vfd-deep-bg: #010302;
   --vfd-on: #39ffca;
-  --vfd-glow: rgba(57, 255, 202, 0.45);
-  --vfd-dim: #133328;
-  --panel-frame: #070908;
+  --vfd-glow: rgba(57, 255, 202, 0.5);
+  --vfd-dim: #103024;
+  --filament-line: rgba(255, 120, 50, 0.08);
 }
 
 * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; margin: 0; padding: 0; }
 body, html { width: 100%; height: 100%; background: #000; display: flex; align-items: center; justify-content: center; overflow: hidden; font-family: 'VT323', monospace; user-select: none; -webkit-user-select: none; }
 
-/* KABLOSUZ, DIŞI TASIŞMAYAN, KUSURSUZ GERÇEKÇİ VFD MODÜL KASASI */
+/* GERÇEKÇİ VFD TÜP MODÜL KASASI VE CAMI */
 .vfd-housing {
   width: 100vw;
   height: 56.25vw;
   max-width: 1920px;
   max-height: 1080px;
-  background-color: var(--panel-frame);
-  background-image: linear-gradient(135deg, #0d0f0e 0%, #020303 100%);
-  border: 1.4vw solid #050706;
-  box-shadow: inset 0 0 25px #000, 0 0 40px rgba(0,0,0,0.9);
+  background-color: var(--vfd-deep-bg);
+  /* Gerçekçi VFD cam içi dikey flaman telleri ve tüp gölgelemesi */
+  background-image: 
+    linear-gradient(90deg, var(--filament-line) 1px, transparent 1px),
+    linear-gradient(180deg, rgba(0,0,0,0.6) 0%, rgba(3,6,5,0.95) 100%);
+  background-size: 3.5vw 100%, 100% 100%;
+  border: 1.5vw solid #040504;
+  box-shadow: inset 0 0 40px rgba(0,0,0,0.95), 0 0 60px rgba(0,0,0,0.8);
   padding: 2vw 2.5vw;
   display: flex;
   flex-direction: column;
@@ -35,24 +39,27 @@ body, html { width: 100%; height: 100%; background: #000; display: flex; align-i
   overflow: hidden;
 }
 
-/* CAM YANSIMASI VE TARAMA ÇİZGİLERİ (CRT / VFD GLASS) */
-.scanlines {
+/* FLAMAN (FILAMENT) ISITICI TELLERE AİT YATAY İNCE İZLER VE CRT CAM TARAMASI */
+.vfd-housing::before {
+  content: "";
   position: absolute;
   inset: 0;
-  background: repeating-linear-gradient(to bottom, rgba(0,0,0,0) 0px, rgba(0,0,0,0) 2px, rgba(0,0,0,0.22) 2px, rgba(0,0,0,0.22) 4px);
+  background: repeating-linear-gradient(0deg, rgba(0, 0, 0, 0.15), rgba(0, 0, 0, 0.15) 1px, transparent 1px, transparent 3px);
   pointer-events: none;
-  z-index: 10;
+  z-index: 12;
 }
+
+/* CAM YANSIMASI VE DERİNLİK */
 .glass-glare {
   position: absolute;
   inset: 0;
-  background: radial-gradient(circle at 50% 10%, rgba(57,255,202,0.02) 0%, transparent 70%),
-              linear-gradient(135deg, rgba(255,255,255,0.02) 0%, transparent 50%, rgba(0,0,0,0.3) 100%);
+  background: radial-gradient(circle at 50% 8%, rgba(57,255,202,0.03) 0%, transparent 65%),
+              linear-gradient(120deg, rgba(255,255,255,0.02) 0%, transparent 45%, rgba(0,0,0,0.4) 100%);
   pointer-events: none;
-  z-index: 11;
+  z-index: 13;
 }
 
-/* ÜST PANEL: SAAT VE DURUM */
+/* ÜST PANEL */
 .top-deck {
   display: flex;
   justify-content: space-between;
@@ -63,7 +70,7 @@ body, html { width: 100%; height: 100%; background: #000; display: flex; align-i
 .vfd-text {
   font-size: 4.5vw;
   color: var(--vfd-on);
-  text-shadow: 0 0 8px var(--vfd-glow);
+  text-shadow: 0 0 10px var(--vfd-glow), 0 0 20px rgba(57,255,202,0.2);
   letter-spacing: 2px;
 }
 .top-sub {
@@ -73,10 +80,10 @@ body, html { width: 100%; height: 100%; background: #000; display: flex; align-i
 }
 .top-sub span.active {
   color: var(--vfd-on);
-  text-shadow: 0 0 5px var(--vfd-glow);
+  text-shadow: 0 0 6px var(--vfd-glow);
 }
 
-/* ORTA PANEL: 20 İSTASYON IZGARASI */
+/* ORTA PANEL: 20 İSTASYON IZGARASI (SÖNÜK İZLERLE BİRLİKTE) */
 .grid-container {
   flex: 1;
   display: grid;
@@ -88,8 +95,8 @@ body, html { width: 100%; height: 100%; background: #000; display: flex; align-i
 }
 
 .station-btn {
-  background: rgba(0,0,0,0.25);
-  border: 1px solid var(--vfd-dim);
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(16, 48, 36, 0.5);
   color: var(--vfd-dim);
   cursor: pointer;
   display: flex;
@@ -103,18 +110,35 @@ body, html { width: 100%; height: 100%; background: #000; display: flex; align-i
   letter-spacing: 1px;
 }
 
+/* Sönük VFD segment arka plan detayları */
+.station-btn::after {
+  content: "888";
+  position: absolute;
+  font-size: 1.8vw;
+  color: rgba(16, 48, 36, 0.2);
+  letter-spacing: 2px;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.station-btn span {
+  position: relative;
+  z-index: 2;
+}
+
 .station-btn.active {
   border-color: var(--vfd-on);
   color: var(--vfd-on);
-  background: rgba(57, 255, 202, 0.04);
-  text-shadow: 0 0 8px var(--vfd-glow);
-  box-shadow: inset 0 0 6px rgba(57, 255, 202, 0.15);
+  background: rgba(57, 255, 202, 0.06);
+  text-shadow: 0 0 10px var(--vfd-glow), 0 0 20px rgba(57,255,202,0.3);
+  box-shadow: inset 0 0 8px rgba(57, 255, 202, 0.2);
 }
+.station-btn.active::after { display: none; }
 
 .station-btn .num { margin-right: 0.5vw; }
 .station-btn .name { font-weight: bold; }
 
-/* ALT PANEL: OYNAT, DURDUR VE KANAL DEĞİŞTİRME BUTONLARI */
+/* ALT PANEL */
 .bottom-deck {
   display: flex;
   flex-direction: column;
@@ -136,7 +160,7 @@ body, html { width: 100%; height: 100%; background: #000; display: flex; align-i
 }
 
 .ctrl-btn {
-  background: transparent;
+  background: rgba(0,0,0,0.4);
   border: 1px solid var(--vfd-dim);
   color: var(--vfd-dim);
   font-family: inherit;
@@ -150,8 +174,8 @@ body, html { width: 100%; height: 100%; background: #000; display: flex; align-i
 .ctrl-btn.active, .ctrl-btn:hover {
   border-color: var(--vfd-on);
   color: var(--vfd-on);
-  text-shadow: 0 0 6px var(--vfd-glow);
-  background: rgba(57, 255, 202, 0.05);
+  text-shadow: 0 0 8px var(--vfd-glow);
+  background: rgba(57, 255, 202, 0.08);
 }
 
 /* MARQUEE KAYAN YAZI BANDI */
@@ -166,7 +190,7 @@ body, html { width: 100%; height: 100%; background: #000; display: flex; align-i
   display: inline-block;
   font-size: 2.2vw;
   color: var(--vfd-on);
-  text-shadow: 0 0 8px var(--vfd-glow);
+  text-shadow: 0 0 10px var(--vfd-glow);
   letter-spacing: 2.5px;
   animation: marqueeScroll 25s linear infinite;
 }
@@ -179,7 +203,6 @@ body, html { width: 100%; height: 100%; background: #000; display: flex; align-i
 <body>
 
 <div class="vfd-housing">
-  <div class="scanlines"></div>
   <div class="glass-glare"></div>
 
   <!-- ÜST PANEL -->
@@ -203,7 +226,7 @@ body, html { width: 100%; height: 100%; background: #000; display: flex; align-i
         <button class="ctrl-btn" id="btn-stop" onclick="stopAudio()">[STOP]</button>
         <button class="ctrl-btn" onclick="nextStation()">[NEXT CH &gt;]</button>
       </div>
-      <div style="font-size: 1.6vw; color: var(--vfd-dim); letter-spacing: 1.5px;">KRAVTS RAD.430</div>
+      <div style="font-size: 1.6vw; color: var(--vfd-dim); letter-spacing: 1.5px;">KRAVTS VFD.430</div>
     </div>
     <div class="marquee-wrapper">
       <div class="marquee-text" id="lbl-status">«« NOW PLAYING: 01 NIGHTRIDE FM Stereo Stream Online ««</div>
