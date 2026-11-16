@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-<title>KRAVTS // CYBER-VFD MODULE RADIO</title>
+<title>KRAVTS // REALISTIC CYBER-VFD RADIO</title>
 <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -11,23 +11,23 @@
   --vfd-on: #39ffca;
   --vfd-glow: rgba(57, 255, 202, 0.45);
   --vfd-dim: #133328;
-  --border-dark: #0a0a0a;
+  --panel-frame: #070908;
 }
 
 * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; margin: 0; padding: 0; }
 body, html { width: 100%; height: 100%; background: #000; display: flex; align-items: center; justify-content: center; overflow: hidden; font-family: 'VT323', monospace; user-select: none; -webkit-user-select: none; }
 
-/* DÜZ, GERÇEKÇİ SİYAH VFD MODÜL ÇERÇEVESİ */
-.vfd-module {
+/* KABLOSUZ, DIŞI TASIŞMAYAN, KUSURSUZ GERÇEKÇİ VFD MODÜL KASASI */
+.vfd-housing {
   width: 100vw;
   height: 56.25vw;
   max-width: 1920px;
   max-height: 1080px;
-  background-color: var(--border-dark);
-  background-image: linear-gradient(135deg, #111 0%, #050505 100%);
-  border: 1.2vw solid #0c0c0c;
-  box-shadow: inset 0 0 20px #000, 0 0 50px rgba(0,0,0,0.8);
-  padding: 1.5vw 2.5vw;
+  background-color: var(--panel-frame);
+  background-image: linear-gradient(135deg, #0d0f0e 0%, #020303 100%);
+  border: 1.4vw solid #050706;
+  box-shadow: inset 0 0 25px #000, 0 0 40px rgba(0,0,0,0.9);
+  padding: 2vw 2.5vw;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -35,18 +35,19 @@ body, html { width: 100%; height: 100%; background: #000; display: flex; align-i
   overflow: hidden;
 }
 
-/* CAM YANSIMASI VE TARAMA ÇİZGİLERİ */
+/* CAM YANSIMASI VE TARAMA ÇİZGİLERİ (CRT / VFD GLASS) */
 .scanlines {
   position: absolute;
   inset: 0;
-  background: repeating-linear-gradient(to bottom, rgba(0,0,0,0) 0px, rgba(0,0,0,0) 2px, rgba(0,0,0,0.2) 2px, rgba(0,0,0,0.2) 4px);
+  background: repeating-linear-gradient(to bottom, rgba(0,0,0,0) 0px, rgba(0,0,0,0) 2px, rgba(0,0,0,0.22) 2px, rgba(0,0,0,0.22) 4px);
   pointer-events: none;
   z-index: 10;
 }
 .glass-glare {
   position: absolute;
   inset: 0;
-  background: linear-gradient(135deg, rgba(255,255,255,0.015) 0%, transparent 60%);
+  background: radial-gradient(circle at 50% 10%, rgba(57,255,202,0.02) 0%, transparent 70%),
+              linear-gradient(135deg, rgba(255,255,255,0.02) 0%, transparent 50%, rgba(0,0,0,0.3) 100%);
   pointer-events: none;
   z-index: 11;
 }
@@ -81,13 +82,13 @@ body, html { width: 100%; height: 100%; background: #000; display: flex; align-i
   display: grid;
   grid-template-columns: repeat(5, 1fr);
   grid-template-rows: repeat(4, 1fr);
-  gap: 1vw;
+  gap: 1.2vw;
   padding: 1vw 0;
   z-index: 2;
 }
 
 .station-btn {
-  background: rgba(0,0,0,0.3);
+  background: rgba(0,0,0,0.25);
   border: 1px solid var(--vfd-dim);
   color: var(--vfd-dim);
   cursor: pointer;
@@ -105,15 +106,15 @@ body, html { width: 100%; height: 100%; background: #000; display: flex; align-i
 .station-btn.active {
   border-color: var(--vfd-on);
   color: var(--vfd-on);
-  background: rgba(57, 255, 202, 0.05);
+  background: rgba(57, 255, 202, 0.04);
   text-shadow: 0 0 8px var(--vfd-glow);
-  box-shadow: inset 0 0 6px rgba(57, 255, 202, 0.2);
+  box-shadow: inset 0 0 6px rgba(57, 255, 202, 0.15);
 }
 
 .station-btn .num { margin-right: 0.5vw; }
 .station-btn .name { font-weight: bold; }
 
-/* ALT PANEL: KONTROLLER, İLERİ/GERİ VE KAYAN YAZI */
+/* ALT PANEL: OYNAT, DURDUR VE KANAL DEĞİŞTİRME BUTONLARI */
 .bottom-deck {
   display: flex;
   flex-direction: column;
@@ -140,15 +141,17 @@ body, html { width: 100%; height: 100%; background: #000; display: flex; align-i
   color: var(--vfd-dim);
   font-family: inherit;
   font-size: 1.8vw;
-  padding: 0.1vw 0.8vw;
+  padding: 0.1vw 0.9vw;
   cursor: pointer;
   border-radius: 2px;
   transition: all 0.1s ease;
+  letter-spacing: 1px;
 }
 .ctrl-btn.active, .ctrl-btn:hover {
   border-color: var(--vfd-on);
   color: var(--vfd-on);
   text-shadow: 0 0 6px var(--vfd-glow);
+  background: rgba(57, 255, 202, 0.05);
 }
 
 /* MARQUEE KAYAN YAZI BANDI */
@@ -175,7 +178,7 @@ body, html { width: 100%; height: 100%; background: #000; display: flex; align-i
 </head>
 <body>
 
-<div class="vfd-module">
+<div class="vfd-housing">
   <div class="scanlines"></div>
   <div class="glass-glare"></div>
 
@@ -188,19 +191,19 @@ body, html { width: 100%; height: 100%; background: #000; display: flex; align-i
     <div class="vfd-text" id="lbl-time">12:57:02</div>
   </div>
 
-  <!-- ORTA PANEL (20 RADYO) -->
+  <!-- ORTA PANEL (20 RADYO KANALI) -->
   <div class="grid-container" id="radioGrid"></div>
 
   <!-- ALT PANEL -->
   <div class="bottom-deck">
     <div class="controls-row">
       <div class="media-group">
-        <button class="ctrl-btn" onclick="prevStation()">[&lt; PREV]</button>
+        <button class="ctrl-btn" onclick="prevStation()">[&lt; PREV CH]</button>
         <button class="ctrl-btn active" id="btn-play" onclick="playAudio()">[PLAY]</button>
         <button class="ctrl-btn" id="btn-stop" onclick="stopAudio()">[STOP]</button>
-        <button class="ctrl-btn" onclick="nextStation()">[NEXT &gt;]</button>
+        <button class="ctrl-btn" onclick="nextStation()">[NEXT CH &gt;]</button>
       </div>
-      <div style="font-size: 1.6vw; color: var(--vfd-dim); letter-spacing: 1.5px;">KRAVTS CYBER-VFD</div>
+      <div style="font-size: 1.6vw; color: var(--vfd-dim); letter-spacing: 1.5px;">KRAVTS RAD.430</div>
     </div>
     <div class="marquee-wrapper">
       <div class="marquee-text" id="lbl-status">«« NOW PLAYING: 01 NIGHTRIDE FM Stereo Stream Online ««</div>
